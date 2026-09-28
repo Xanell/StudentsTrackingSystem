@@ -7,8 +7,6 @@ from .SchoolClasses import SchoolClass
 from .Subjects import Subject
 from .Schedule import Schedule
 from .Lessons import Lesson
-from .LessonFile import LessonFile
-from .HomeworkSubmission import HomeworkSubmission
 from .Mark import Mark
 from .Attendance import Attendance
 
@@ -22,8 +20,6 @@ __all__ = [
     "Subject",
     "Schedule",
     "Lesson",
-    "LessonFile",
-    "HomeworkSubmission",
     "Mark",
     "Attendance",
 ]

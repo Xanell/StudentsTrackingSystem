@@ -28,7 +28,7 @@ class AttendanceService:
             student = self.user_repo.get_by_id(item.student_id)
             if student is None or student.class_id != lesson.class_id:
                 raise BusinessValidationError(f"Ученик с id={item.student_id} не учится в классе этого урока")
-            marks[item.student_id] = (item.is_present, item.reason)
+            marks[item.student_id] = item.is_present
 
         records = self.attendance_repo.save_for_lesson(data.lesson_id, marks)
         return self._to_details(records)
@@ -37,7 +37,7 @@ class AttendanceService:
         """Исправить одну отметку, например ошибочную «Н»."""
         if self.attendance_repo.get_by_id(attendance_id) is None:
             raise NotFoundError(f"Отметка с id={attendance_id} не найдена")
-        record = self.attendance_repo.update_attendance(attendance_id, data.is_present, data.reason)
+        record = self.attendance_repo.update_attendance(attendance_id, data.is_present)
         return AttendanceDetail.model_validate(record)
 
     def get_by_lesson(self, lesson_id: int) -> list[AttendanceDetail]:

@@ -1,6 +1,6 @@
 from datetime import date
 from sqlalchemy import select
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Session
 from ..DTOs.Lessons import Lesson
 from .Common import UNSET, apply_updates
 
@@ -26,20 +26,6 @@ class LessonsRepository:
 
     def get_by_id(self, lesson_id: int) -> Lesson | None:
         return self.db.get(Lesson, lesson_id)
-
-    def get_full(self, lesson_id: int) -> Lesson | None:
-        """Урок сразу с файлами, сдачами, оценками и посещаемостью — для страницы урока."""
-        stmt = (
-            select(Lesson)
-            .where(Lesson.id == lesson_id)
-            .options(
-                selectinload(Lesson.files),
-                selectinload(Lesson.submissions),
-                selectinload(Lesson.marks),
-                selectinload(Lesson.attendance),
-            )
-        )
-        return self.db.scalars(stmt).one_or_none()
 
     def get_by_class_date_number(self, class_id: int, lesson_date: date, lesson_number: int) -> Lesson | None:
         """Для get-or-create урока по расписанию и проверки на дубль."""

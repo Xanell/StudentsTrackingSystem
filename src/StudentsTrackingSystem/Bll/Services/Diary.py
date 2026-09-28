@@ -51,9 +51,9 @@ class DiaryService:
                 marks_by_lesson[mark.lesson_id] = []
             marks_by_lesson[mark.lesson_id].append(DiaryMark(grade=mark.grade, grade_type=mark.grade_type))
 
-        absences_by_lesson = {}
+        absent_lesson_ids = []
         for absence in self.attendance_repo.get_absences_by_student_and_period(student_id, monday, last_day):
-            absences_by_lesson[absence.lesson_id] = absence.reason
+            absent_lesson_ids.append(absence.lesson_id)
 
         result = []
         for calendar_day in calendar_days:
@@ -66,7 +66,7 @@ class DiaryService:
             result.append(diary_day)
         return result
 
-    def _past_lessons(self, day: date, lessons, marks_by_lesson: dict, absences_by_lesson: dict) -> list[DiaryLesson]:
+    def _past_lessons(self, day: date, lessons, marks_by_lesson: dict, absent_lesson_ids: dict) -> list[DiaryLesson]:
         """Проведённые уроки дня с оценками и пропусками."""
         result = []
         for lesson in lessons:
@@ -84,9 +84,8 @@ class DiaryService:
                 homework_due_date=lesson.homework_due_date,
                 marks=marks_by_lesson.get(lesson.id, []),
             )
-            if lesson.id in absences_by_lesson:
+            if lesson.id in absent_lesson_ids:
                 diary_lesson.is_absent = True
-                diary_lesson.absence_reason = absences_by_lesson[lesson.id]
             result.append(diary_lesson)
         return result
 

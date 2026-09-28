@@ -25,16 +25,5 @@ class Lesson(Base):
     school_class: Mapped["SchoolClass"] = relationship(lazy="joined")
     subject: Mapped["Subject"] = relationship(lazy="joined")
     teacher: Mapped["User"] = relationship(lazy="joined")
-
-    # Только прикреплённые материалы. Откреплённые остаются в базе, но сюда не попадают.
-    # viewonly: файлы добавляются и открепляются через LessonFileRepository, а не через этот список.
-    files: Mapped[list["LessonFile"]] = relationship(
-        primaryjoin="and_(Lesson.id == LessonFile.lesson_id, LessonFile.detached_at.is_(None))",
-        order_by="LessonFile.uploaded_at",
-        viewonly=True,
-    )
-    submissions: Mapped[list["HomeworkSubmission"]] = relationship(
-        back_populates="lesson", order_by="HomeworkSubmission.submitted_at",
-    )
     marks: Mapped[list["Mark"]] = relationship(back_populates="lesson")
     attendance: Mapped[list["Attendance"]] = relationship(back_populates="lesson")

@@ -20,29 +20,26 @@ class AttendanceRepository:
         stmt = select(Attendance).where(Attendance.lesson_id == lesson_id, Attendance.student_id == student_id)
         return self.db.scalars(stmt).one_or_none()
 
-    def save_for_lesson(self, lesson_id: int, marks: dict[int, tuple[bool, str | None]]) -> list[Attendance]:
+    def save_for_lesson(self, lesson_id: int, marks: dict[int, bool]) -> list[Attendance]:
         existing = {}
         for record in self.get_by_lesson(lesson_id):
             existing[record.student_id] = record
-        for student_id, (is_present, reason) in marks.items():
-            reason = None if is_present else reason
+        for student_id, is_present in marks.items():
             record = existing.get(student_id)
             if record is None:
-                record = Attendance(lesson_id=lesson_id, student_id=student_id, is_present=is_present, reason=reason)
+                record = Attendance(lesson_id=lesson_id, student_id=student_id, is_present=is_present)
                 self.db.add(record)
                 existing[student_id] = record
             else:
                 record.is_present = is_present
-                record.reason = reason
         self.db.commit()
         return list(existing.values())
 
-    def update_attendance(self, attendance_id: int, is_present: bool, reason: str | None = None) -> Attendance | None:
+    def update_attendance(self, attendance_id: int, is_present: bool) -> Attendance | None:
         record = self.get_by_id(attendance_id)
         if record is None:
             return None
         record.is_present = is_present
-        record.reason = None if is_present else reason
         self.db.commit()
         self.db.refresh(record)
         return record

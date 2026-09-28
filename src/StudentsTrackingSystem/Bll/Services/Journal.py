@@ -72,7 +72,6 @@ class JournalService:
                 if record is not None:
                     cell.attendance_id = record.id
                     cell.is_present = record.is_present
-                    cell.absence_reason = record.reason
                 cells.append(cell)
             rows.append(
                 JournalRow(

@@ -18,7 +18,6 @@ class DiaryLesson(BaseSchema):
     homework_due_date: date | None = None
     marks: list[DiaryMark] = []
     is_absent: bool = False
-    absence_reason: str | None = None
 
 class DiaryDay(BaseSchema):
     day: date
