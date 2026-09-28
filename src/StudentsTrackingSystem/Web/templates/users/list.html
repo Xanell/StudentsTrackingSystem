@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load labels %}
+
+{% block title %}Пользователи{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Пользователи</h1>
+    <div class="header-actions">
+        <a href="{% url 'user_archive' %}" class="btn-cancel">Архив</a>
+        <a href="{% url 'user_create' %}" class="btn-primary">Добавить пользователя</a>
+    </div>
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Логин</th>
+            <th>ФИО</th>
+            <th>Роль</th>
+            <th>Класс</th>
+            <th>Расписание</th>
+            <th>Редактирование</th>
+            <th>Сброс пароля</th>
+            <th>Архив</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.last_name }} {{ user.first_name }} {{ user.middle_name }}</td>
+            <td>{{ user.role|role_label }}</td>
+            <td>
+                {% if user.school_class %}
+                    {{ user.school_class.number }}{{ user.school_class.letter }}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+
+            <td>                                                            
+            {% if user.role == "teacher" %}                             
+                <a href="{% url 'schedule_by_teacher' user.id %}"       
+                   class="btn-action btn-edit">Расписание</a>           
+            {% else %}                                                  
+                —                                                       
+            {% endif %}                                                 
+        </td>                                                           
+            <td>
+                <a href="{% url 'user_edit' user.id %}" class="btn-action btn-edit">Редактировать</a>
+            </td>
+            <td>
+                <form method="post" action="{% url 'user_reset_password' user.id %}">
+                    {% csrf_token %}
+                    <button class="btn-action btn-reset" type="submit">Сбросить пароль</button>
+                </form>
+            </td>
+            <td>
+                {% if user.id != request.current_user.id %}
+                <form method="post" action="{% url 'user_deactivate' user.id %}" onsubmit="return confirm('Деактивировать пользователя?')">
+                    {% csrf_token %}
+                    <button class="btn-action btn-remove" type="submit">Деактивировать</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr class="empty-row">
+            <td colspan="8">Пользователей пока нет</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

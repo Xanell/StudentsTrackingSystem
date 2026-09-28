@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load labels %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        Расписание учителя:
+        {{ teacher.last_name }} {{ teacher.first_name }} {{ teacher.middle_name }}
+    </h1>
+</div>
+
+{% if grid %}
+<div class="schedule-grid">
+    <table class="data-table schedule-table">
+        <thead>
+            <tr>
+                <th class="lesson-col">Урок</th>
+                {% for weekday_num, weekday_label in weekdays %}
+                    <th>{{ weekday_label }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson_num in lesson_numbers %}
+            <tr>
+                <td class="lesson-cell">
+                    <strong>{{ lesson_num }}-й</strong>
+                    {% with times=lesson_times|get_item:lesson_num %}
+                        {% if times %}
+                            <small class="lesson-time">
+                                {{ times.0|time:"H:i" }}–{{ times.1|time:"H:i" }}
+                            </small>
+                        {% endif %}
+                    {% endwith %}
+                </td>
+
+                {% for weekday_num, weekday_label in weekdays %}
+                    {% with day_slots=grid|get_item:weekday_num %}
+                        {% with slot=day_slots|get_item:lesson_num %}
+                            <td class="schedule-cell {% if slot %}has-lesson{% endif %}">
+                                {% if slot %}
+                                    <div class="lesson-card">
+                                        <div class="lesson-subject">
+                                            {{ slot.subject.name }}
+                                        </div>
+                                        <div class="lesson-class">
+                                            {{ slot.school_class.number }}{{ slot.school_class.letter }}
+                                        </div>
+                                        {% if slot.room %}
+                                            <div class="lesson-room">
+                                                каб. {{ slot.room }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </td>
+                        {% endwith %}
+                    {% endwith %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="empty">У учителя пока нет уроков.</p>
+{% endif %}
+{% endblock %}

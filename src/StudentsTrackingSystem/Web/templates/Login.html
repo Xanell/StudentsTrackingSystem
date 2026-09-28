@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block body_class %}page-auth{% endblock %}
+
+{% block content %}
+<div class="login-card">
+    <h1>Вход в систему</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" name="username" required autocomplete="username">
+        </div>
+        <div>
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button>Войти</button>
+    </form>
+</div>
+{% endblock %}

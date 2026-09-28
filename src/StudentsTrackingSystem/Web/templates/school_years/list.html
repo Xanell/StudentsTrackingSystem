@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Учебные годы</h1>
+    <a href="{% url 'school_year_create' %}" class="btn btn-primary">Добавить год</a>
+</div>
+
+{% if years %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Начало</th>
+            <th>Окончание</th>
+            <th>Список классов</th>
+            <th>Календарь</th>
+            <th>Текущий</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for year in years %}
+        <tr>
+            <td>{{ year.name }}</td>
+            <td>{{ year.start_date|date:"d.m.Y" }}</td>
+            <td>{{ year.end_date|date:"d.m.Y" }}</td>
+            <td>
+                <a href="{% url 'school_classes' year.id %}" class="btn-action btn-edit">Просмотреть</a>
+            </td>
+            <td>
+                <a href="{% url 'school_calendar' year.id %}" class="btn-action btn-edit">Открыть</a>
+            </td>
+            <td>
+                {% if year.is_current %}
+                    <svg class="icon-check" viewBox="0 0 24 24" width="20" height="20"
+                        fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                {% else %}
+                    <form method="post" action="{% url 'school_year_make_current' year.id %}"
+                        style="display:inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-action btn-current">Сделать текущим</button>
+                    </form>
+                {% endif %}
+            </td>
+                <td>
+                    <a href="{% url 'school_year_edit' year.id %}" class="btn-action btn-edit">Изменить</a>
+                </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty">Учебных годов пока нет.</p>
+{% endif %}
+{% endblock %}

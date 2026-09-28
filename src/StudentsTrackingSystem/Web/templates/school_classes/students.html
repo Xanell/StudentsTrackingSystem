@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Класс {{ school_class.number }}{{ school_class.letter }}</h1>
+    <a href="{% url 'school_classes' year_id %}" class="btn-cancel">К списку классов</a>
+</div>
+
+<div class="two-columns">
+    <div>
+        <h2 class="section-title">
+            Ученики класса <span class="count">({{ students_in_class|length }})</span>
+        </h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ФИО</th>
+                    <th class="col-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students_in_class %}
+                <tr>
+                    <td>{{ student.last_name }} {{ student.first_name }} {{ student.middle_name }}</td>
+                    <td class="col-actions">
+                        <form method="post" action="{% url 'school_class_remove_student' year_id school_class.id student.id %}" style="display:inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-action btn-remove">Убрать</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="2">В классе пока нет учеников</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h2 class="section-title">
+            Ученики без класса <span class="count">({{ students|length }})</span>
+        </h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ФИО</th>
+                    <th class="col-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.last_name }} {{ student.first_name }} {{ student.middle_name }}</td>
+                    <td class="col-actions">
+                        <form method="post" action="{% url 'school_class_set_student' year_id school_class.id student.id %}" style="display:inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-action btn-current">Добавить</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="2">Все ученики распределены</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load labels %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Календарь года {{ year.name }}</h1>
+    <a href="{% url 'school_years' %}" class="btn-cancel">К учебным годам</a>
+</div>
+
+<div class="two-columns">
+    <div>
+        <div class="section-header">
+            <h2 class="section-title">
+                Четверть
+            </h2>
+            <a href="{% url 'quarter_add' year_id %}" class="btn-primary">Добавить четверть</a>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Номер</th>
+                    <th>Дата начала</th>
+                    <th>Дата конца</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quarter in quarters %}
+                <tr>
+                    <td>{{ quarter.number }}</td>
+                    <td>{{ quarter.start_date|date:"d.m.Y" }}</td>
+                    <td>{{ quarter.end_date|date:"d.m.Y" }}</td>
+                    <td><a href="{% url 'quarter_edit' year.id quarter.id %}" class="btn-action btn-edit">Изменить</a></td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="4">Четверти не созданы</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <div class="section-header">
+            <h2 class="section-title">
+                Праздники и исключения
+            </h2>
+            <a href="{% url 'dayoff_add' year_id %}" class="btn-primary">Добавить исключение</a>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Даты</th>
+                    <th>Тип</th>
+                    <th>Описание</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for day in daysoff %}
+                <tr>
+                    <td>    
+                        {{ day.start_date|date:"d.m.Y" }}
+                        {% if day.end_date != day.start_date %}
+                            — 
+                        {{ day.end_date|date:"d.m.Y" }}
+                    {% endif %}     
+                    </td>
+                    <td>{{ day.day_type|day_type_label }}</td>
+                    <td>{{ day.title }}</td>
+                    <td><a href="{% url 'dayoff_edit' year.id day.id %}" class="btn-action btn-edit">Изменить</a></td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="4">Дни не указаны</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

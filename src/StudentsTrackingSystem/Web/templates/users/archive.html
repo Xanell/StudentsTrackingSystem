@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load labels %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Архив пользователей</h1>
+    <a href="{% url 'users' %}" class="btn-cancel">К списку пользователей</a>
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>ФИО</th>
+            <th>Роль</th>
+            <th>Класс</th>
+            <th>Деактивирован</th>
+            <th>Восстановить</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.last_name }} {{ user.first_name }} {{ user.middle_name }}</td>
+            <td>{{ user.role|role_label }}</td>
+            <td>
+                {% if user.school_class %}
+                    {{ user.school_class.number }}{{ user.school_class.letter }}
+                {% else %}
+                    —
+                {% endif %}
+            </td>    
+            <td>
+                {{ user.deactivated_at|date:"d.m.Y" }}
+            </td>                                                     
+            <td>
+                <form method="post" action="{% url 'user_restore' user.id %}">
+                    {% csrf_token %}
+                    <button class="btn-action btn-primary" type="submit">Восстановить</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr class="empty-row">
+            <td colspan="5">Пользователей в архиве пока нет</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

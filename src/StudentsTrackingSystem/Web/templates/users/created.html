@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{% if is_reset %}Пароль сброшен{% else %}Пользователь создан{% endif %}</h1>
+</div>
+
+<div class="created-card">
+    <div class="alert alert-success">
+        <svg class="icon-success" viewBox="0 0 24 24" fill="none" 
+             stroke="currentColor" stroke-width="2" 
+             stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        <span>{% if is_reset %}Пароль сброшен {% else %}Пользователь успешно создан{% endif %}</span>
+    </div>
+
+    <div class="credentials">
+        <div class="credential-row">
+            <span class="credential-label">Логин:</span>
+            <code class="credential-value">{{ username }}</code>
+            <button type="button" class="btn-copy" 
+                    onclick="copyToClipboard('{{ username }}', this)">
+                Копировать
+            </button>
+        </div>
+
+        <div class="credential-row">
+            <span class="credential-label">Пароль:</span>
+            <code class="credential-value">{{ password }}</code>
+            <button type="button" class="btn-copy" 
+                    onclick="copyToClipboard('{{ password }}', this)">
+                Копировать
+            </button>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        ⚠️ <strong>Важно:</strong> Скопируйте пароль и передайте его пользователю. 
+        После ухода со страницы пароль больше не будет показан.
+    </div>
+
+    <div class="form-actions">
+        <a href="{% url 'users' %}" class="btn-submit">К списку пользователей</a>
+        {% if not is_reset %}
+        <a href="{% url 'user_create' %}" class="btn-cancel">Создать ещё</a>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function copyToClipboard(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+        const original = btn.textContent;
+        btn.textContent = "Скопировано!";
+        btn.classList.add("copied");
+        setTimeout(() => {
+            btn.textContent = original;
+            btn.classList.remove("copied");
+        }, 1500);
+    }).catch(err => {
+        console.error("Ошибка копирования:", err);
+    });
+}
+</script>
+{% endblock %}

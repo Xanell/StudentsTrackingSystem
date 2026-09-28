@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        {% if action == "create" %}
+            Новое исключение — {{ year.name }}
+        {% else %}
+            Редактирование: {{ dayoff.title }}
+        {% endif %}
+    </h1>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="start_date">Дата начала</label>
+        <input type="date" id="start_date" name="start_date" required
+               value="{{ dayoff.start_date|date:'Y-m-d'|default:'' }}">
+    </div>
+    <div class="form-group">
+        <label for="end_date">Дата конца</label>
+        <input type="date" id="end_date" name="end_date"
+               value="{{ dayoff.end_date|date:'Y-m-d'|default:'' }}">
+        <span class="hint">Оставьте пустым, если это один день</span>
+    </div>
+    <div class="form-group">
+        <label for="day_type">Тип дня</label>
+            <select id="day_type" name="day_type" required>
+                <option value="">— Выберите тип —</option>
+                {% for day in day_types %}
+                    <option value="{{ day.value }}" {% if dayoff and dayoff.day_type == day_type.value %}selected{% endif %}>
+                        {{ day.label }}
+                    </option>
+                {% endfor %}
+            </select>
+    </div>
+    <div class="form-group">
+        <label for="title">Название</label>
+        <input type="text" id="title" name="title" required maxlength="100"
+            value="{{ dayoff.title|default:'' }}" placeholder="Например: День защитника Отечества">
+        </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            {% if action == "create" %}Создать{% else %}Сохранить{% endif %}
+        </button>
+        <a href="{% url 'school_calendar' year_id %}" class="btn-cancel">Отмена</a>
+    </div>
+</form>
+{% endblock %}

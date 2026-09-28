@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load labels %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        {% if action == "create" %}
+            {% if prefill.weekday and prefill.lesson_number %}
+                Новый урок — {{ school_class.number }}{{ school_class.letter }},
+                {{ prefill.weekday_label }}, {{ prefill.lesson_number }}-й урок
+            {% else %}
+                Новый урок — {{ school_class.number }}{{ school_class.letter }}
+            {% endif %}
+        {% else %}
+            Редактирование урока — {{ school_class.number }}{{ school_class.letter }}
+        {% endif %}
+    </h1>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+
+    {# Скрытые поля, если день и урок предзаполнены #}
+    {% if prefill.weekday and prefill.lesson_number %}
+        <input type="hidden" name="weekday" value="{{ prefill.weekday }}">
+        <input type="hidden" name="lesson_number" value="{{ prefill.lesson_number }}">
+    {% endif %}
+
+    {# Предмет #}
+    <div class="form-group">
+        <label for="subject_id">Предмет</label>
+        <select id="subject_id" name="subject_id" required>
+            <option value="">— Выберите предмет —</option>
+            {% for subject in subjects %}
+                <option value="{{ subject.id }}"
+                    {% if slot and slot.subject.id == subject.id %}selected{% endif %}>
+                    {{ subject.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    {# Учитель #}
+    <div class="form-group">
+        <label for="teacher_id">Учитель</label>
+        <select id="teacher_id" name="teacher_id" required>
+            <option value="">— Выберите учителя —</option>
+            {% for teacher in teachers %}
+                <option value="{{ teacher.id }}"
+                    {% if slot and slot.teacher.id == teacher.id %}selected{% endif %}>
+                    {{ teacher.last_name }} {{ teacher.first_name }} {{ teacher.middle_name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    {# День недели — показываем, если НЕ предзаполнено #}
+    {% if not prefill.weekday or not prefill.lesson_number %}
+        <div class="form-group">
+            <label for="weekday">День недели</label>
+            <select id="weekday" name="weekday" required>
+                <option value="">— Выберите день —</option>
+                {% for weekday_num, weekday_label in weekdays %}
+                    <option value="{{ weekday_num }}"
+                        {% if slot and slot.weekday == weekday_num %}selected{% endif %}>
+                        {{ weekday_label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="lesson_number">Номер урока</label>
+            <select id="lesson_number" name="lesson_number" required>
+                <option value="">— Выберите урок —</option>
+                {% for lesson_num in lesson_numbers %}
+                    {% with times=lesson_times|get_item:lesson_num %}
+                        <option value="{{ lesson_num }}"
+                            {% if slot and slot.lesson_number == lesson_num %}selected{% endif %}>
+                            {{ lesson_num }}-й
+                            {% if times %}
+                                ({{ times.0|time:"H:i" }}–{{ times.1|time:"H:i" }})
+                            {% endif %}
+                        </option>
+                    {% endwith %}
+                {% endfor %}
+            </select>
+        </div>
+    {% else %}
+        {# Информационный блок — показываем, куда добавляем #}
+        <div class="form-info">
+            <div class="form-info-row">
+                <span class="form-info-label">День недели:</span>
+                <span class="form-info-value">{{ prefill.weekday_label }}</span>
+            </div>
+            <div class="form-info-row">
+                <span class="form-info-label">Урок:</span>
+                <span class="form-info-value">
+                    {{ prefill.lesson_number }}-й
+                    {% if prefill.lesson_time %}
+                        ({{ prefill.lesson_time }})
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Кабинет #}
+    <div class="form-group">
+        <label for="room">Кабинет</label>
+        <input type="text" id="room" name="room" maxlength="10"
+               value="{{ slot.room|default:'' }}"
+               placeholder="Например, 101">
+        <span class="hint">Необязательно. Максимум 10 символов.</span>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-submit">
+            {% if action == "create" %}Создать{% else %}Сохранить{% endif %}
+        </button>
+        <a href="{% url 'schedule_by_class' school_class.id %}" class="btn-cancel">
+            Отмена
+        </a>
+    </div>
+</form>
+{% endblock %}

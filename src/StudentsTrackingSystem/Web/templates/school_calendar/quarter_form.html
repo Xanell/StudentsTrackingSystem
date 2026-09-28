@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        {% if action == "create" %}
+            Новая четверть — {{ year.name }}
+        {% else %}
+            Редактирование: {{ quarter.number }} четверть — {{ year.name }}
+        {% endif %}
+    </h1>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+    {% if action == "create" %}
+    <div class="form-group">
+        <select id="number" name="number" required>
+        <option value="">— Выберите —</option>
+        <option value="1">1 четверть</option>
+        <option value="2">2 четверть</option>
+        <option value="3">3 четверть</option>
+        <option value="4">4 четверть</option>
+    </select>
+    </div>
+    {% endif %}
+    <div class="form-group">
+        <label for="start_date">Дата начала</label>
+        <input type="date" id="start_date" name="start_date" required
+               value="{{ quarter.start_date|date:'Y-m-d'|default:'' }}">
+    </div>
+    <div class="form-group">
+        <label for="end_date">Дата конца</label>
+        <input type="date" id="end_date" name="end_date" required
+               value="{{ quarter.end_date|date:'Y-m-d'|default:'' }}">
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            {% if action == "create" %}Создать{% else %}Сохранить{% endif %}
+        </button>
+        <a href="{% url 'school_calendar' year_id %}" class="btn-cancel">Отмена</a>
+    </div>
+</form>
+{% endblock %}

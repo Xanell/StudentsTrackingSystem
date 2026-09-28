@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Расписание</h1>
+</div>
+
+{% if not current_year %}
+    <div class="alert alert-info">
+        Сначала установите текущий учебный год.
+        <a href="{% url 'school_years' %}">Перейти к учебным годам</a>
+    </div>
+{% else %}
+
+<div class="breadcrumbs">
+    <span>Текущий год: <strong>{{ current_year.name }}</strong></span>
+</div>
+
+{% if classes %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Класс</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in classes %}
+        <tr>
+            <td><strong>{{ c.number }}{{ c.letter }}</strong></td>
+            <td class="col-actions">
+                <a href="{% url 'schedule_by_class' c.id %}"
+                   class="btn-action btn-edit">
+                    Открыть расписание
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p class="empty">В текущем учебном году нет классов.</p>
+{% endif %}
+
+{% endif %}
+{% endblock %}

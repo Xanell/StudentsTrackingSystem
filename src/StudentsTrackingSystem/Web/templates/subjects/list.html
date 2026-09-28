@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+    <h1>Предметы</h1>
+    <a href="{% url 'subject_create' %}" class="btn btn-primary">Добавить предмет</a>
+</div>
+
+{% if subjects %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Сокр. название</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for subject in subjects %}
+        <tr>
+            <td>{{ subject.name }}</td>
+            <td>{% if subject.short_name %}
+                    {{ subject.short_name }}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'subject_edit' subject.id %}" class="btn-action btn-edit">Изменить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty">Предметов пока нет.</p>
+{% endif %}
+{% endblock %}

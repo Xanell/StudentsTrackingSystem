@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}{{ lesson.subject.name }} — {{ lesson.school_class.number }}{{ lesson.school_class.letter }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ lesson.subject.name }} — {{ lesson.school_class.number }}{{ lesson.school_class.letter }}</h1>
+    <a href="{% url 'lessons_by_day' %}" class="btn-cancel">← К моим урокам</a>
+</div>
+
+<p class="hint">
+    {{ lesson.lesson_date|date:"d.m.Y" }} · {{ lesson.lesson_number }} урок · {{ start|time:"H:i" }}–{{ end|time:"H:i" }}
+</p>
+
+<form method="post" class="form">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="topic">Тема урока</label>
+        <input type="text" id="topic" name="topic" maxlength="255"
+               value="{{ lesson.topic|default:'' }}">
+    </div>
+
+    <div class="form-group">
+        <label for="homework">Домашнее задание</label>
+        <textarea id="homework" name="homework">{{ lesson.homework|default:'' }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="homework_due_date">Сдать к</label>
+        <input type="date" id="homework_due_date" name="homework_due_date"
+               value="{{ lesson.homework_due_date|date:'Y-m-d'|default:'' }}">
+        <span class="hint">Оставьте пустым, если задание к следующему уроку</span>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-submit">Сохранить</button>
+    </div>
+</form>
+{% endblock %}

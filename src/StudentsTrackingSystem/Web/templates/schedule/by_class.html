@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load labels %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Расписание класса {{ school_class.number }}{{ school_class.letter }}</h1>
+    {% if request.is_admin %}
+        <a href="{% url 'schedule_create' school_class.id %}" class="btn-primary">
+            Добавить урок
+        </a>
+    {% endif %}
+</div>
+<div class="schedule-grid">
+    <table class="data-table schedule-table">
+        <thead>
+            <tr>
+                <th class="lesson-col">Урок</th>
+                {% for weekday_num, weekday_label in weekdays %}
+                    <th>{{ weekday_label }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson_num in lesson_numbers %}
+            <tr>
+                <td class="lesson-cell">
+                    <strong>{{ lesson_num }}-й</strong>
+                    {% with times=lesson_times|get_item:lesson_num %}
+                        {% if times %}
+                            <small class="lesson-time">
+                                {{ times.0|time:"H:i" }}–{{ times.1|time:"H:i" }}
+                            </small>
+                        {% endif %}
+                    {% endwith %}
+                </td>
+
+                {% for weekday_num, weekday_label in weekdays %}
+                    {% with day_slots=grid|get_item:weekday_num %}
+                        {% with slot=day_slots|get_item:lesson_num %}
+                            <td class="schedule-cell {% if slot %}has-lesson{% endif %}">
+                                {% if slot %}
+                                    <div class="lesson-card">
+                                        <div class="lesson-subject">
+                                            {{ slot.subject.name }}
+                                        </div>
+                                        <div class="lesson-teacher">
+                                            {{ slot.teacher.last_name }}
+                                            {{ slot.teacher.first_name|first }}.
+                                            {{ slot.teacher.middle_name|first }}
+                                        </div>
+                                        {% if slot.room %}
+                                            <div class="lesson-room">
+                                                каб. {{ slot.room }}
+                                            </div>
+                                        {% endif %}
+                                        {% if request.is_admin %}
+                                            <a href="{% url 'schedule_edit' slot.id %}"
+                                               class="lesson-edit"
+                                               title="Редактировать">Изменить</a>
+                                        {% endif %}
+                                    </div>
+                                {% elif request.is_admin %}
+                                    <a href="{% url 'schedule_create' school_class.id %}?weekday={{ weekday_num }}&lesson_number={{ lesson_num }}"
+                                       class="empty-slot"
+                                       title="Добавить урок">+</a>
+                                {% endif %}
+                            </td>
+                        {% endwith %}
+                    {% endwith %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="page-actions">
+    <a href="{% url 'school_classes' school_class.school_year.id %}" class="btn-cancel">
+        К списку классов
+    </a>
+</div>
+{% endblock %}

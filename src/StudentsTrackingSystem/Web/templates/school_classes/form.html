@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        {% if action == "create" %}
+            Новый класс — {{ year.name }}
+        {% else %}
+            Редактирование: {{ school_class.number }}{{ school_class.letter }}
+        {% endif %}
+    </h1>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="number">Номер класса</label>
+        <input type="number" id="number" name="number" required min="1" max="11"
+               value="{{ school_class.number|default:'' }}">
+    </div>
+
+    <div class="form-group">
+        <label for="letter">Буква</label>
+        <input type="text" id="letter" name="letter" required maxlength="1"
+               value="{{ school_class.letter|default:'' }}"
+               placeholder="А">
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            {% if action == "create" %}Создать{% else %}Сохранить{% endif %}
+        </button>
+        <a href="{% url 'school_classes' year_id %}" class="btn-cancel">Отмена</a>
+    </div>
+</form>
+{% endblock %}

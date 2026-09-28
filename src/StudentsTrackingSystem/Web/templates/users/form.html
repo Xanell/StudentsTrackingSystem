@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Создание пользователя{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        {% if action == "create" %}
+            Новый пользователь
+        {% else %}
+            Редактирование: {{ user.username }}
+        {% endif %}
+    </h1>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="last_name">Фамилия</label>
+        <input type="text" id="last_name" name="last_name" required value="{{ user.last_name|default:'' }}">
+    </div>
+
+    <div class="form-group">
+        <label for="first_name">Имя</label>
+        <input type="text" id="first_name" name="first_name" required value="{{ user.first_name|default:'' }}">
+    </div>
+
+    <div class="form-group">
+        <label for="middle_name">Отчество</label>
+        <input type="text" id="middle_name" name="middle_name" required value="{{ user.middle_name|default:'' }}">
+    </div>
+
+    <div class="form-group">
+        <label for="role">Роль</label>
+            <select id="role" name="role" required>
+                {% for role in roles %}
+                    <option value="{{ role.value }}" {% if user and user.role == role.value %}selected{% endif %}>
+                        {{ role.label }}
+                    </option>
+                {% endfor %}
+            </select>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn-submit">
+            {% if action == "create" %}Создать{% else %}Сохранить{% endif %}
+        </button>
+        <a href="{% url 'users' %}" class="btn-cancel">Отмена</a>
+    </div>
+</form>
+{% endblock %}

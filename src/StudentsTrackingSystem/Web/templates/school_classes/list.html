@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Классы — {{ year.name }}</h1>
+    <a href="{% url 'school_class_create' year_id %}" class="btn-primary">Добавить класс</a>
+</div>
+
+{% if classes %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Класс</th>
+            <th>Учебный год</th>
+            <th>Список учеников</th>
+            <th>Расписание</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in classes %}
+        <tr>
+            <td>{{ c.number }}{{ c.letter }}</td>
+            <td>{{ year.name }}</td>
+            <td>
+                <a href="{% url 'school_class_students' year_id c.id %}"
+                    class="btn-action btn-edit">Просмотреть</a>
+            </td>
+            <td>                                                         
+            <a href="{% url 'schedule_by_class' c.id %}"                    
+                class="btn-action btn-edit">Расписание</a>                
+        </td> 
+            <td>
+                <a href="{% url 'school_class_edit' year_id c.id %}"
+                    class="btn-action btn-edit">Изменить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="page-actions">
+    <a href="{% url 'school_years' %}" class="btn-cancel">
+        К списку учебных годов
+    </a>
+</div>
+{% else %}
+<p class="empty">Классов пока нет.</p>
+{% endif %}
+{% endblock %}

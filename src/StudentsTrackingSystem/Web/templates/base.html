@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Школята</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <div class="app-layout">
+
+        <!-- HEADER -->
+        <header class="app-header">
+            <a href="{% url 'home' %}" class="header-left">
+                <svg class="logo-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.0268 23.0536C9.73344 23.0536 5.57348 18.0536 5.40015 9.73364H9.05347C9.17347 15.8403 11.8667 18.427 14.0001 18.9603V9.73364H17.4402V15.0003C19.5469 14.7736 21.7599 12.3736 22.5066 9.73364H25.9467C25.3734 12.987 22.9733 15.387 21.2667 16.3736C22.9733 17.1736 25.7068 19.267 26.7468 23.0536H22.96C22.1467 20.5203 20.1202 18.5603 17.4402 18.2936V23.0536H17.0268Z"/>
+                </svg>
+                <span class="app-title">Школята</span>
+            </a>
+
+            <div class="header-right">
+                 {% if request.current_user %}
+                    <span class="user-name">{{ request.current_user.username }}</span>
+                    <a href="{% url 'logout' %}" class="btn-logout">Выйти</a>
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- SIDEBAR -->
+        {% if request.current_user %}
+        <aside class="app-sidebar">
+            <nav class="sidebar-menu">
+                {% if request.is_admin %}
+                <a href="{% url 'school_years' %}" class="menu-item">📅 Учебные годы</a>
+                <a href="{% url 'calendar_root' %}" class="menu-item">📆 Календарь</a>
+                <a href="{% url 'classes_root' %}" class="menu-item">🏫 Классы</a>
+                <a href="{% url 'users' %}" class="menu-item">👥 Пользователи</a>
+                <a href="{% url 'subjects' %}" class="menu-item">📚 Предметы</a>
+                {% endif %}
+                {% if request.is_teacher %}
+                <a href="{% url 'schedule_by_teacher' request.current_user.id %}" class="menu-item">📖 Моё расписание</a>
+                <a href="{% url 'lessons_by_day' %}"class="menu-item">📝 Уроки</a>
+                {% endif %}
+
+                {% if request.is_admin %}
+                <a href="{% url 'schedule_list' %}" class="menu-item">📖 Расписание</a>
+                {% endif %}
+                {% endif %}
+            </nav>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="app-main">
+            {% if messages %}
+                <div class="messages">
+                    {% for msg in messages %}
+                        <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+
+    </div>
+</body>
+</html>
