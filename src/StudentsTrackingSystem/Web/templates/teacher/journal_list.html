@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Мои журналы{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Мои журналы</h1>
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Класс</th>
+            <th>Предмет</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for link in journals %}
+        <tr class="row-link"
+            onclick="location.href='{% url 'class_journal' link.school_class.id link.subject.id %}'">
+            <td>{{ link.school_class.number }}{{ link.school_class.letter }}</td>
+            <td>{{ link.subject.name }}</td>
+        </tr>
+        {% empty %}
+        <tr class="empty-row"><td colspan="2">В расписании текущего года у вас нет уроков</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

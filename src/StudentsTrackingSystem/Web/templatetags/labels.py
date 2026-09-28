@@ -2,6 +2,7 @@ from django import template
 from Core.Enums import ROLE_LABELS
 from Core.Enums import DAY_TYPE_LABELS
 from Core.Enums import DAY_OFF_TYPES
+from Core.Enums import GRADE_TYPE_LABELS
 register = template.Library()
 
 @register.filter
@@ -18,3 +19,7 @@ def get_item(dictionary, key):
     if dictionary is None:
         return None
     return dictionary.get(key)
+
+@register.filter
+def grade_type_label(grade_type):
+    return GRADE_TYPE_LABELS.get(grade_type, grade_type)

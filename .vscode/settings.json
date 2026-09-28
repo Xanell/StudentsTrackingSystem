@@ -1,3 +1,7 @@
 {
-    "python-envs.defaultEnvManager": "ms-python.python:system"
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python.analysis.extraPaths": [
+        "C:/Users/AstroPC/AppData/Local/Programs/Python/Python315/Lib/site-packages",
+        "src/StudentsTrackingSystem"
+    ]
 }

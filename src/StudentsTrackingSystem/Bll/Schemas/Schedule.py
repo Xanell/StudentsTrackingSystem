@@ -2,11 +2,13 @@ from pydantic import Field
 from Bll.Schemas.Base import BaseSchema
 from Bll.Schemas.Subject import SubjectDetail
 from Bll.Schemas.User import UserShort
+from Bll.Schemas.SchoolClasses import SchoolClassShort
 from Core.Enums import MAX_LESSONS_PER_DAY
 
 class ScheduleDetail(BaseSchema):
     id: int
     class_id: int
+    school_class: SchoolClassShort
     weekday: int        # 1 — понедельник
     lesson_number: int  # время звонков — Core.Enums.LESSON_TIMES[lesson_number]
     room: str | None

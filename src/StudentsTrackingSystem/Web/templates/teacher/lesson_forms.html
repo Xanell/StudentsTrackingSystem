@@ -1,40 +1,72 @@
 {% extends "base.html" %}
 
-{% block title %}{{ lesson.subject.name }} — {{ lesson.school_class.number }}{{ lesson.school_class.letter }}{% endblock %}
-
 {% block content %}
 <div class="page-header">
     <h1>{{ lesson.subject.name }} — {{ lesson.school_class.number }}{{ lesson.school_class.letter }}</h1>
-    <a href="{% url 'lessons_by_day' %}" class="btn-cancel">← К моим урокам</a>
+    <a href="{% url 'lessons_by_day' %}" class="btn-cancel">К моим урокам</a>
 </div>
 
 <p class="hint">
     {{ lesson.lesson_date|date:"d.m.Y" }} · {{ lesson.lesson_number }} урок · {{ start|time:"H:i" }}–{{ end|time:"H:i" }}
 </p>
 
-<form method="post" class="form">
+<form method="post">
     {% csrf_token %}
-
-    <div class="form-group">
-        <label for="topic">Тема урока</label>
-        <input type="text" id="topic" name="topic" maxlength="255"
-               value="{{ lesson.topic|default:'' }}">
+    <div class="form form-left lesson-fields">
+        <div class="form-group">
+            <label for="topic">Тема урока</label>
+            <input type="text" id="topic" name="topic" maxlength="255"
+                   value="{{ lesson.topic|default:'' }}">
+        </div>
+        <div class="form-group">
+            <label for="homework_due_date">Сдать к</label>
+            <input type="date" id="homework_due_date" name="homework_due_date"
+                   value="{{ lesson.homework_due_date|date:'Y-m-d'|default:'' }}">
+            <span class="hint">Оставьте пустым, если задание к следующему уроку</span>
+        </div>
+        <div class="form-group form-group-wide">
+            <label for="homework">Домашнее задание</label>
+            <textarea id="homework" name="homework">{{ lesson.homework|default:'' }}</textarea>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label for="homework">Домашнее задание</label>
-        <textarea id="homework" name="homework">{{ lesson.homework|default:'' }}</textarea>
-    </div>
-
-    <div class="form-group">
-        <label for="homework_due_date">Сдать к</label>
-        <input type="date" id="homework_due_date" name="homework_due_date"
-               value="{{ lesson.homework_due_date|date:'Y-m-d'|default:'' }}">
-        <span class="hint">Оставьте пустым, если задание к следующему уроку</span>
-    </div>
+    <h2 class="section-title">Ученики</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Ученик</th>
+                <th>Был</th>
+                {% for gt in grade_types %}
+                    <th>{{ gt.label }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                <td>{{ row.student.last_name }} {{ row.student.first_name }}</td>
+                <td>
+                    <input type="checkbox" name="present_{{ row.student.id }}"
+                           {% if row.is_present %}checked{% endif %}>
+                </td>
+                {% for g in row.grades %}
+                <td>
+                    <select name="grade_{{ g.type }}_{{ row.student.id }}">
+                        <option value="">—</option>
+                        {% for v in grade_values %}
+                            <option value="{{ v }}" {% if g.value == v %}selected{% endif %}>{{ v }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                {% endfor %}
+            </tr>
+            {% empty %}
+            <tr class="empty-row"><td colspan="5">В классе нет учеников</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <div class="form-actions">
-        <button type="submit" class="btn-submit">Сохранить</button>
+        <button type="submit" class="btn-submit">Сохранить урок</button>
     </div>
 </form>
 {% endblock %}

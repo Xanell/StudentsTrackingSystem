@@ -7,7 +7,7 @@ from Web.views.SchoolClasses import school_classes_list, school_class_create, sc
 from Web.views.Subjects import subject_list, subject_create, subject_edit
 from Web.views.SchoolCalendar import calendar_root, school_calendar_list, quarter_add, quarter_edit, dayoff_add, dayoff_edit
 from Web.views.Schedule import schedule_list, schedule_by_class, schedule_by_teacher, schedule_create, schedule_edit
-from Web.views.Teacher import lessons_list, teacher_lesson
+from Web.views.Teacher import lessons_list, teacher_lesson, teacher_journals, class_journal
 
 urlpatterns = [
     #URL LoginPage
@@ -56,5 +56,7 @@ urlpatterns = [
     path("schedule/<int:schedule_id>/edit/", schedule_edit, name="schedule_edit"),
     #URL TeacherPage
     path("teacher/lessons/", lessons_list, name="lessons_by_day"),
-    path("teacher/lessons/<int:lesson_id>/", teacher_lesson, name="teacher_lesson")
+    path("teacher/lessons/<int:lesson_id>/", teacher_lesson, name="teacher_lesson"),
+    path("teacher/journals/", teacher_journals, name="teacher_journals"),
+    path("teacher/journals/<int:class_id>/<int:subject_id>/:", class_journal, name="class_journal")
 ]

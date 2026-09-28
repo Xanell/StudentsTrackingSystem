@@ -41,6 +41,7 @@
                 {% if request.is_teacher %}
                 <a href="{% url 'schedule_by_teacher' request.current_user.id %}" class="menu-item">📖 Моё расписание</a>
                 <a href="{% url 'lessons_by_day' %}"class="menu-item">📝 Уроки</a>
+                <a href="{% url 'teacher_journals' %}" class="menu-item">📒 Журналы</a>
                 {% endif %}
 
                 {% if request.is_admin %}

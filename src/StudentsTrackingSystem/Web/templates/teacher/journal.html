@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load labels %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ journal.school_class.number }}{{ journal.school_class.letter }} — {{ journal.subject.name }}</h1>
+    <a href="{% url 'teacher_journals' %}" class="btn-cancel">К журналам</a>
+</div>
+
+<!-- Переключатель четвертей -->
+<div class="quarter-tabs">
+    {% for q in quarters %}
+        <a href="{% url 'class_journal' class_id subject_id %}?quarter={{ q.id }}"
+           class="quarter-tab {% if q.id == selected_quarter.id %}active{% endif %}">
+            {{ q.number }} четверть
+        </a>
+    {% endfor %}
+</div>
+
+<p class="hint">
+    {{ journal.start_date|date:"d.m.Y" }} — {{ journal.end_date|date:"d.m.Y" }} · уроков: {{ journal.lessons|length }}
+</p>
+
+<div class="table-scroll">
+    <table class="data-table journal-table">
+        <thead>
+            <tr>
+                <th class="journal-student">Ученик</th>
+                {% for lesson in journal.lessons %}
+                    <th class="journal-cell">
+                        <a href="{% url 'teacher_lesson' lesson.id %}">
+                            {{ lesson.lesson_date|date:"d.m" }}
+                        </a>
+                    </th>
+                {% endfor %}
+                <th class="journal-cell journal-average">Средний</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in journal.rows %}
+            <tr>
+                <td class="journal-student">{{ row.student.last_name }} {{ row.student.first_name }}</td>
+
+                {% for cell in row.cells %}
+                <td class="journal-cell">
+                    {% if cell.is_present == False %}
+                        <span class="journal-absent" title="{{ cell.absence_reason|default:'Отсутствовал' }}">Н</span>
+                    {% endif %}
+                    {% for mark in cell.marks %}
+                        <span class="journal-mark grade-{{ mark.grade }}"
+                              title="{{ mark.grade_type|grade_type_label }}">{{ mark.grade }}</span>
+                    {% endfor %}
+                </td>
+                {% endfor %}
+
+                <td class="journal-cell journal-average">
+                    {{ row.average|floatformat:2|default:"—" }}
+                </td>
+            </tr>
+            {% empty %}
+            <tr class="empty-row"><td colspan="2">В классе нет учеников</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not journal.lessons %}
+    <p class="hint">В этой четверти по предмету ещё не было уроков.</p>
+{% endif %}
+{% endblock %}

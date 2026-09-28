@@ -829,3 +829,102 @@ a.header-left {
         padding: 2px 6px;
     }
 }
+.lesson-fields {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 0 20px;
+    max-width: 900px;
+}
+
+.lesson-fields .form-group-wide {
+    grid-column: 1 / -1;
+}
+
+/* ========== ЖУРНАЛ ========== */
+.table-scroll {
+    overflow-x: auto;
+}
+
+.quarter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.quarter-tab {
+    padding: 6px 14px;
+    font-size: 14px;
+    color: #555;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    background: white;
+}
+
+.quarter-tab:hover {
+    border-color: #1abc9c;
+}
+
+.quarter-tab.active {
+    background: #1abc9c;
+    border-color: #1abc9c;
+    color: white;
+}
+
+.journal-table th,
+.journal-table td {
+    padding: 10px 8px;
+}
+
+.journal-table .journal-cell {
+    width: 1%;
+    min-width: 44px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.journal-table th.journal-cell a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.journal-table th.journal-cell a:hover {
+    color: #1abc9c;
+}
+
+/* Имя ученика не уезжает при горизонтальной прокрутке */
+.journal-table .journal-student {
+    position: sticky;
+    left: 0;
+    background: white;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.journal-table thead .journal-student {
+    background: #f8f9fa;
+}
+
+.journal-average {
+    font-weight: 600;
+    border-left: 2px solid #e9ecef;
+}
+
+.journal-mark {
+    display: inline-block;
+    min-width: 18px;
+    font-weight: 600;
+}
+
+.journal-mark.grade-5 { color: #27ae60; }
+.journal-mark.grade-4 { color: #2980b9; }
+.journal-mark.grade-3 { color: #d68910; }
+.journal-mark.grade-2,
+.journal-mark.grade-1 { color: #c0392b; }
+
+.journal-absent {
+    display: inline-block;
+    color: #c0392b;
+    font-weight: 600;
+    margin-right: 2px;
+}

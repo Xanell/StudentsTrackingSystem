@@ -20,7 +20,7 @@ def reset_tables():
 
 if __name__ == "__main__":
     check_connection()
-    reset_tables()
+    create_tables()
 
     with SessionLocal() as session:
         admin_seed(session)
