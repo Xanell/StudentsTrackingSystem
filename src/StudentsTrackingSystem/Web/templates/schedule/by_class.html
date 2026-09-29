@@ -73,9 +73,11 @@
         </tbody>
     </table>
 </div>
+{% if request.is_admin %}
 <div class="page-actions">
     <a href="{% url 'school_classes' school_class.school_year.id %}" class="btn-cancel">
         К списку классов
     </a>
 </div>
+{% endif %}
 {% endblock %}

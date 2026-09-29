@@ -7,4 +7,6 @@ def home(request):
         return redirect("school_years")
     if request.is_teacher:
         return redirect("lessons_by_day")
+    if request.is_student:
+        return redirect("student_diary")
     return render(request, "Home.html", {"user": request.current_user})

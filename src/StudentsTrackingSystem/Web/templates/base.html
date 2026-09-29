@@ -37,6 +37,7 @@
                 <a href="{% url 'classes_root' %}" class="menu-item">🏫 Классы</a>
                 <a href="{% url 'users' %}" class="menu-item">👥 Пользователи</a>
                 <a href="{% url 'subjects' %}" class="menu-item">📚 Предметы</a>
+                <a href="{% url 'schedule_list' %}" class="menu-item">📖 Расписание</a>
                 {% endif %}
                 {% if request.is_teacher %}
                 <a href="{% url 'teacher_shedule' %}" class="menu-item">📖 Моё расписание</a>
@@ -44,8 +45,9 @@
                 <a href="{% url 'teacher_journals' %}" class="menu-item">📒 Журналы</a>
                 {% endif %}
 
-                {% if request.is_admin %}
-                <a href="{% url 'schedule_list' %}" class="menu-item">📖 Расписание</a>
+                {% if request.is_student %}
+                <a href="{% url 'student_schedule' %}" class="menu-item">📖 Моё расписание</a>
+                <a href="{% url 'student_diary' %}" class="menu-item">📖 Мой дневник</a>
                 {% endif %}
                 {% endif %}
             </nav>

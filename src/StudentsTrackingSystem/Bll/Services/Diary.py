@@ -60,7 +60,7 @@ class DiaryService:
             diary_day = DiaryDay(day=calendar_day.day, day_type=calendar_day.day_type, title=calendar_day.title)
             if calendar_day.day_type == DayType.SCHOOL_DAY:
                 if calendar_day.day <= today:
-                    diary_day.lessons = self._past_lessons(calendar_day.day, lessons, marks_by_lesson)
+                    diary_day.lessons = self._past_lessons(calendar_day.day, lessons, marks_by_lesson, absent_lesson_ids)
                 else:
                     diary_day.lessons = self._planned_lessons(student.class_id, calendar_day.day)
             result.append(diary_day)

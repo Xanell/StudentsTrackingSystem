@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load labels %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Дневник</h1>
+    <div class="week-nav">
+        <a href="{% url 'student_diary' %}?date={{ prev_week }}" class="btn-secondary">← Пред. неделя</a>
+        {% if not is_current_week %}
+            <a href="{% url 'student_diary' %}" class="btn-secondary">Текущая</a>
+        {% endif %}
+        <a href="{% url 'student_diary' %}?date={{ next_week }}" class="btn-secondary">След. неделя →</a>
+    </div>
+</div>
+
+<div class="diary">
+{% for day in days %}
+    <div class="diary-day">
+        <h2 class="diary-date">{{ day.day|date:"l, j E" }}</h2>
+
+        {% if day.day_type != "school_day" %}
+            <p class="diary-off">{{ day.title|default:day.day_type|day_type_label }}</p>
+        {% else %}
+            <table class="data-table diary-table">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Предмет</th>
+                        <th>Тема</th>
+                        <th>Домашнее задание</th>
+                        <th>Оценки</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for lesson in day.lessons %}
+                    <tr>
+                        <td>
+                            <strong>{{ lesson.lesson_number }}</strong>
+
+                            <small>{{ lesson.start_time|time:"H:i" }}–{{ lesson.end_time|time:"H:i" }}</small>
+                        </td>
+                        <td>
+                            {{ lesson.subject_name }}
+                            {% if lesson.room %}
+<small>каб. {{ lesson.room }}</small>{% endif %}
+                        </td>
+                        <td>{{ lesson.topic|default:"—" }}</td>
+                        <td>
+                            {{ lesson.homework|default:"—" }}
+                            {% if lesson.homework_due_date %}
+                                
+<small>до {{ lesson.homework_due_date|date:"d.m" }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if lesson.is_absent %}<span class="grade grade-absent">Н</span>{% endif %}
+                            {% for mark in lesson.marks %}
+                                <span class="grade grade-{{ mark.grade }}" title="{{ mark.grade_type }}">{{ mark.grade }}</span>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="empty">Уроков нет</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

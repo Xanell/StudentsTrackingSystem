@@ -965,3 +965,78 @@ a.header-left {
 .week-nav .btn-today:hover {
     background: #1abc9c;
 }
+/* =========================================================
+   Дневник ученика
+   ========================================================= */
+
+/* --- Блок одного дня --- */
+.diary-day {
+    margin-bottom: 28px;
+}
+
+.diary-date {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #1abc9c;
+}
+
+.diary-date::first-letter {
+    text-transform: uppercase;
+}
+
+/* --- Неучебный день: праздник, каникулы, «День здоровья» --- */
+.diary-off {
+    margin: 0;
+    padding: 14px 18px;
+    background: #fdf6e3;
+    border-left: 4px solid #f39c12;
+    border-radius: 4px;
+    color: #7f6a3c;
+    font-style: italic;
+}
+
+/* --- Таблица уроков: одинаковые колонки у всех дней --- */
+.diary-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.diary-table th:nth-child(1) { width: 110px; }
+.diary-table th:nth-child(2) { width: 22%; }
+.diary-table th:nth-child(3) { width: 28%; }
+.diary-table th:nth-child(5) { width: 110px; }
+
+.diary-table td {
+    vertical-align: top;
+    overflow-wrap: break-word;
+}
+
+.diary-table td small {
+    color: #95a5a6;
+    font-size: 12px;
+}
+
+/* --- Оценки и пропуски --- */
+.grade {
+    display: inline-block;
+    min-width: 24px;
+    padding: 2px 6px;
+    margin-right: 4px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #fff;
+    cursor: default;
+}
+
+.grade-5 { background: #27ae60; }
+.grade-4 { background: #2ecc71; }
+.grade-3 { background: #f39c12; }
+.grade-2,
+.grade-1 { background: #e74c3c; }
+.grade-absent { background: #95a5a6; }
