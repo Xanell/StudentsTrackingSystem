@@ -69,7 +69,7 @@ def schedule_by_class(request, class_id: int):
     })
 
 @login_required
-@role_required(RoleName.ADMIN, RoleName.TEACHER)
+@role_required(RoleName.ADMIN)
 def schedule_by_teacher(request, teacher_id: int):
     with get_session() as db:
         user_service = UserService(db)

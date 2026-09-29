@@ -8,15 +8,16 @@ from Bll.Services.Mark import MarkService
 from Bll.Services.Journal import JournalService
 from Bll.Services.SchoolClasses import SchoolClassService
 from Bll.Services.SchoolQuarter import SchoolQuarterService
+from Bll.Services.Schedule import ScheduleService
 from Bll.Schemas.Lessons import LessonUpdate
 from Bll.Schemas.Attendance import AttendanceItem, AttendanceSave
 from Bll.Schemas.Mark import MarkSet
-from Core.Enums import RoleName, LESSON_TIMES, GradeType, GRADE_TYPE_LABELS
+from Core.Enums import RoleName, LESSON_TIMES, GradeType, GRADE_TYPE_LABELS, SCHOOL_DAYS_PER_WEEK, WEEKDAY_LABELS, MAX_LESSONS_PER_DAY
 from pydantic import ValidationError
 from Core.Exceptions import BllError, NotFoundError
 from Dal.database import get_session
 from Web.Decorators import login_required, role_required
-from datetime import date
+from datetime import date, timedelta
 
 def get_grade_types():
     grade_types = []
@@ -24,15 +25,56 @@ def get_grade_types():
         grade_types.append({"value": grade.value, "label": GRADE_TYPE_LABELS[grade]})
     return grade_types
 
+def get_weekdays():
+    weekdays = []
+    for day in range(1, SCHOOL_DAYS_PER_WEEK + 1):
+        weekdays.append((day, WEEKDAY_LABELS[day]))
+    return weekdays
+
+@login_required
+@role_required(RoleName.TEACHER)
+def teacher_shedule(request):
+    with get_session() as db:
+        teacher_id = request.current_user.id
+        schedule_service = ScheduleService(db)
+        user_service = UserService(db)
+
+        teacher = user_service.get_by_id(teacher_id)
+        slots = schedule_service.get_by_teacher(teacher_id)
+
+        grid = {}
+        for slot in slots:
+            if slot.weekday not in grid:
+                grid[slot.weekday] = {}
+            grid[slot.weekday][slot.lesson_number] = slot
+
+    return render(request, "schedule/by_teacher.html", {
+        "teacher": teacher,
+        "grid": grid,
+        "weekdays": get_weekdays(),
+        "lesson_numbers": list(range(1, MAX_LESSONS_PER_DAY + 1)),
+        "lesson_times": LESSON_TIMES,
+    })
+
 @login_required
 @role_required(RoleName.TEACHER)
 def lessons_list(request):
     with get_session() as db:
         lesson_service = LessonService(db)
         teacher_id = request.current_user.id
-        current_date = date.today()
-        lessons = lesson_service.get_teacher_day(teacher_id, current_date)
 
+        #current_date = date.today()
+        #lessons = lesson_service.get_teacher_day(teacher_id, current_date)
+        date_param = request.GET.get("date", "")
+        try:
+            current_date = date.fromisoformat(date_param)
+        except ValueError:
+            current_date = date.today()
+
+        prev_day = current_date - timedelta(days=1)
+        next_day = current_date + timedelta(days=1)
+
+        lessons = lesson_service.get_teacher_day(teacher_id, current_date)
         rows = []
         for lesson in lessons:
             start, end = LESSON_TIMES[lesson.lesson_number]
@@ -44,6 +86,10 @@ def lessons_list(request):
 
     return render(request, "teacher/lessons.html", {
         "rows": rows,
+        "current_date": current_date,
+        "prev_day": prev_day.isoformat(),
+        "next_day": next_day.isoformat(),
+        "is_today": current_date == date.today(),
     })
 
 @login_required
@@ -145,7 +191,6 @@ def teacher_lesson(request, lesson_id: int):
             rows.append({
                 "student": student,
                 "is_present": record is None or record.is_present,
-                "reason": record.reason if record else "",
                 "grades": grades,
             })
     return render(request, "teacher/lesson_forms.html", {

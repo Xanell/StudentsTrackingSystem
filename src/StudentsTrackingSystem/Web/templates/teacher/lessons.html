@@ -2,9 +2,15 @@
 
 {% block content %}
 <div class="page-header">
-    <h1>Уроки</h1>
+    <h1>Уроки на {{ current_date|date:"d.m.Y" }}</h1>
+    <div class="week-nav">
+        <a href="{% url 'lessons_by_day' %}?date={{ prev_day }}" class="btn-secondary">← Вчера</a>
+        {% if not is_today %}
+            <a href="{% url 'lessons_by_day' %}" class="btn-secondary">Сегодня</a>
+        {% endif %}
+        <a href="{% url 'lessons_by_day' %}?date={{ next_day }}" class="btn-secondary">Завтра →</a>
+    </div>
 </div>
-
 <table class="data-table">
     <thead>
         <tr>
@@ -28,7 +34,7 @@
         </tr>
         {% empty %}
         <tr class="empty-row">
-            <td colspan="5">Уроков нет</td>
+            <td colspan="6">Уроков нет</td>
         </tr>
         {% endfor %}
     </tbody>
