@@ -60,7 +60,7 @@ urlpatterns = [
     path("teacher/lessons/", lessons_list, name="lessons_by_day"),
     path("teacher/lessons/<int:lesson_id>/", teacher_lesson, name="teacher_lesson"),
     path("teacher/journals/", teacher_journals, name="teacher_journals"),
-    path("teacher/journals/<int:class_id>/<int:subject_id>/:", class_journal, name="class_journal"),
+    path("teacher/journals/<int:class_id>/<int:subject_id>/", class_journal, name="class_journal"),
     #URL StudentPage
     path("student/schedule/", student_schedule, name="student_schedule"),
     path("student/diary/", student_diary, name="student_diary"),
