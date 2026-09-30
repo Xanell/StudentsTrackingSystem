@@ -916,11 +916,23 @@ a.header-left {
     font-weight: 600;
 }
 
-.journal-mark.grade-5 { color: #27ae60; }
-.journal-mark.grade-4 { color: #2980b9; }
-.journal-mark.grade-3 { color: #d68910; }
+.journal-mark.grade-5,
+.journal-mark.grade-4,
+.journal-mark.grade-3,
 .journal-mark.grade-2,
-.journal-mark.grade-1 { color: #c0392b; }
+.journal-mark.grade-1 {
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    min-width: 22px;
+    text-align: center;
+}
+
+.journal-mark.grade-5 { background: #27ae60; }
+.journal-mark.grade-4 { background: #2ecc71; }
+.journal-mark.grade-3 { background: #f39c12; }
+.journal-mark.grade-2,
+.journal-mark.grade-1 { background: #e74c3c; }
 
 .journal-absent {
     display: inline-block;
