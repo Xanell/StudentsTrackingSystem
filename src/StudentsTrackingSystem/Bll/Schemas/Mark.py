@@ -7,7 +7,7 @@ class MarkDetail(BaseSchema):
     id: int
     lesson_id: int
     student_id: int
-    grade: int | None  # None — клетка очищена
+    grade: int | None  # None клетка очищена
     grade_type: GradeType
     created_at: datetime
 

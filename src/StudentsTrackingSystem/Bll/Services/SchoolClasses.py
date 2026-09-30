@@ -54,19 +54,8 @@ class SchoolClassService:
         return self._to_shorts(self.school_class_repo.get_classes_by_year(school_year_id))
 
     def get_current_year_classes(self) -> list[SchoolClassShort]:
-        """Классы текущего учебного года. Пустой список, если текущий год не выбран."""
         year = self.school_year_repo.get_current()
         if year is None:
             return []
         return self._to_shorts(self.school_class_repo.get_classes_by_year(year.id))
 
-    def transfer_students(self, from_class_id: int, to_class_id: int) -> int:
-        """
-        Перевод класса в следующий учебный год (5А 2025/26 -> 6А 2026/27).
-        Возвращает, сколько учеников переведено.
-        """
-        from_class = self._get_class(from_class_id)
-        to_class = self._get_class(to_class_id)
-        if to_class.school_year.start_date <= from_class.school_year.start_date:
-            raise BusinessValidationError("Переводить учеников можно только в класс следующего учебного года")
-        return self.user_repo.move_students(from_class_id, to_class_id)

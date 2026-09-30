@@ -5,11 +5,6 @@ from Core.Security import hash_password
 from Dal.Repositories.User import UserRepository
 
 def admin_seed(session: Session, username: str = "Admin", password: str = "admin") -> None:
-    """
-    Создаёт единственного пользователя — администратора.
-    Всё остальное (годы, четверти, классы, предметы, пользователи, расписание)
-    админ заполняет через интерфейс.
-    """
     user_repo = UserRepository(session)
 
     if user_repo.get_by_username(username) is not None:

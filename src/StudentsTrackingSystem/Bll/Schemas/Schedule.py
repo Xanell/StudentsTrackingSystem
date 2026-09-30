@@ -9,8 +9,8 @@ class ScheduleDetail(BaseSchema):
     id: int
     class_id: int
     school_class: SchoolClassShort
-    weekday: int        # 1 — понедельник
-    lesson_number: int  # время звонков — Core.Enums.LESSON_TIMES[lesson_number]
+    weekday: int        # понедельник
+    lesson_number: int  # время звонков Core.Enums.LESSON_TIMES[lesson_number]
     room: str | None
     subject: SubjectDetail
     teacher: UserShort

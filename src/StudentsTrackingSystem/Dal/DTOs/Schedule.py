@@ -15,7 +15,7 @@ class Schedule(Base):
     class_id: Mapped[int] = mapped_column(ForeignKey("classes.id"))
     subject_id: Mapped[int] = mapped_column(ForeignKey("subjects.id"))
     teacher_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    weekday: Mapped[int] = mapped_column(SmallInteger)        # 1 — понедельник, как date.isoweekday()
+    weekday: Mapped[int] = mapped_column(SmallInteger)        # понедельник, как date.isoweekday()
     lesson_number: Mapped[int] = mapped_column(SmallInteger)  # ключ в Core.Enums.LESSON_TIMES
     room: Mapped[str | None] = mapped_column(String(10))
 

@@ -10,7 +10,7 @@ class SchoolYear(Base):
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(30), unique=True)  # "2026/2027"
+    name: Mapped[str] = mapped_column(String(30), unique=True)  # 2026/2027
     start_date: Mapped[date] = mapped_column(Date)
     end_date: Mapped[date] = mapped_column(Date)
     is_current: Mapped[bool] = mapped_column(default=False)

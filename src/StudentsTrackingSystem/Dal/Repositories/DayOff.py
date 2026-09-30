@@ -34,7 +34,6 @@ class DayOffRepository:
         return list(self.db.scalars(stmt).all())
 
     def get_in_range(self, start_date: date, end_date: date) -> list[DayOff]:
-        # Все нерабочие периоды, задевающие диапазон. Для календаря на месяц одним запросом
         stmt = (
             select(DayOff)
             .where(DayOff.start_date <= end_date, DayOff.end_date >= start_date)

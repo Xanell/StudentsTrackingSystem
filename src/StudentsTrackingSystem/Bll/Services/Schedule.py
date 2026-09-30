@@ -101,13 +101,11 @@ class ScheduleService:
         return ScheduleDetail.model_validate(self._get_slot(schedule_id))
 
     def get_by_class(self, class_id: int) -> list[ScheduleDetail]:
-        """Вся неделя класса, отсортирована по дню и номеру урока."""
         if self.school_class_repo.get_class_by_id(class_id) is None:
             raise NotFoundError(f"Класс с id={class_id} не найден")
         return self._to_details(self.schedule_repo.get_by_class(class_id))
 
     def get_by_teacher(self, teacher_id: int) -> list[ScheduleDetail]:
-        """Расписание учителя на текущий учебный год."""
         year = self.school_year_repo.get_current()
         if year is None:
             return []

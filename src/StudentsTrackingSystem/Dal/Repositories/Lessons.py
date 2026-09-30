@@ -28,7 +28,6 @@ class LessonsRepository:
         return self.db.get(Lesson, lesson_id)
 
     def get_by_class_date_number(self, class_id: int, lesson_date: date, lesson_number: int) -> Lesson | None:
-        """Для get-or-create урока по расписанию и проверки на дубль."""
         stmt = select(Lesson).where(
             Lesson.class_id == class_id,
             Lesson.lesson_date == lesson_date,
@@ -45,11 +44,6 @@ class LessonsRepository:
         return list(self.db.scalars(stmt).all())
 
     def get_by_class_and_period(self, class_id: int, start_date: date, end_date: date, subject_id: int | None = None) -> list[Lesson]:
-        """
-        Уроки класса за период.
-        - дневник ученика на неделю: без subject_id;
-        - журнал учителя за четверть: с subject_id.
-        """
         stmt = select(Lesson).where(
             Lesson.class_id == class_id,
             Lesson.lesson_date >= start_date,
@@ -61,7 +55,6 @@ class LessonsRepository:
         return list(self.db.scalars(stmt).all())
 
     def get_by_teacher_and_date(self, teacher_id: int, lesson_date: date) -> list[Lesson]:
-        """Уроки учителя за день — главная страница учителя."""
         stmt = (
             select(Lesson)
             .where(Lesson.teacher_id == teacher_id, Lesson.lesson_date == lesson_date)
@@ -70,7 +63,6 @@ class LessonsRepository:
         return list(self.db.scalars(stmt).all())
 
     def get_with_homework(self, class_id: int, start_date: date, end_date: date) -> list[Lesson]:
-        """Уроки класса за период, на которых задали домашку."""
         stmt = (
             select(Lesson)
             .where(
@@ -98,5 +90,3 @@ class LessonsRepository:
         self.db.commit()
         self.db.refresh(lesson)
         return lesson
-
-    # delete_lesson нет: проведённые уроки не удаляются.

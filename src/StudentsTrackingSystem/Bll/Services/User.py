@@ -26,7 +26,6 @@ class UserService:
         return user
 
     def _generate_username(self, last_name: str, first_name: str, middle_name: str) -> str:
-        """ИвановИИ, при совпадении — ИвановИИ2, ИвановИИ3..."""
         base = f"{last_name}{first_name[0].upper()}{middle_name[0].upper()}"
         username = base
         counter = 2
@@ -50,7 +49,6 @@ class UserService:
             raise NotFoundError(f"Класс с id={class_id} не найден")
 
     def _has_current_schedule(self, teacher_id: int) -> bool:
-        """Есть ли у учителя уроки в расписании текущего учебного года."""
         year = self.school_year_repo.get_current()
         if year is None:
             return False

@@ -1019,7 +1019,7 @@ a.header-left {
 .diary-table th:nth-child(1) { width: 110px; }
 .diary-table th:nth-child(2) { width: 22%; }
 .diary-table th:nth-child(3) { width: 28%; }
-.diary-table th:nth-child(5) { width: 110px; }
+.diary-table th:nth-child(5) { width: 140px; }
 
 .diary-table td {
     vertical-align: top;

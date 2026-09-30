@@ -5,7 +5,6 @@ from ..DTOs.Attendance import Attendance
 from ..DTOs.Lessons import Lesson
 
 class AttendanceRepository:
-
     def __init__(self, session: Session):
         self.db = session
 
@@ -64,5 +63,3 @@ class AttendanceRepository:
             .order_by(Lesson.lesson_date, Lesson.lesson_number)
         )
         return list(self.db.scalars(stmt).all())
-
-    # Удаления нет: посещаемость не удаляется.

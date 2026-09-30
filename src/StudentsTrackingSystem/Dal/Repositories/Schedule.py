@@ -26,7 +26,6 @@ class ScheduleRepository:
         return self.db.get(Schedule, schedule_id)
 
     def get_by_class(self, class_id: int) -> list[Schedule]:
-        """Вся неделя класса — для сетки расписания."""
         stmt = (
             select(Schedule)
             .where(Schedule.class_id == class_id)
@@ -35,7 +34,6 @@ class ScheduleRepository:
         return list(self.db.scalars(stmt).all())
 
     def get_by_class_and_weekday(self, class_id: int, weekday: int) -> list[Schedule]:
-        """Уроки класса в конкретный день недели — по ним создаются уроки на дату."""
         stmt = (
             select(Schedule)
             .where(Schedule.class_id == class_id, Schedule.weekday == weekday)
@@ -54,7 +52,6 @@ class ScheduleRepository:
     def get_teacher_slot(
         self, teacher_id: int, weekday: int, lesson_number: int, school_year_id: int
     ) -> Schedule | None:
-        """Занят ли учитель в этот слот в этом учебном году (в другом классе)."""
         stmt = (
             select(Schedule)
             .join(SchoolClass, Schedule.class_id == SchoolClass.id)
@@ -68,7 +65,6 @@ class ScheduleRepository:
         return self.db.scalars(stmt).first()
 
     def get_by_teacher(self, teacher_id: int, school_year_id: int) -> list[Schedule]:
-        """Расписание учителя на год."""
         stmt = (
             select(Schedule)
             .join(SchoolClass, Schedule.class_id == SchoolClass.id)
@@ -92,5 +88,3 @@ class ScheduleRepository:
         self.db.commit()
         self.db.refresh(slot)
         return slot
-
-    # delete_schedule нет: слоты расписания не удаляются, только редактируются через update_schedule.

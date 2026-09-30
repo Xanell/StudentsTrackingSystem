@@ -6,8 +6,6 @@ from Bll.Schemas.Subject import SubjectDetail
 from Bll.Schemas.User import UserShort
 
 class LessonShort(BaseSchema):
-    """Строка в списке уроков / столбец в журнале."""
-
     id: int
     lesson_date: date
     lesson_number: int
@@ -20,7 +18,7 @@ class LessonDetail(BaseSchema):
     lesson_number: int
     topic: str | None
     homework: str | None
-    homework_due_date: date | None  # None — к следующему уроку
+    homework_due_date: date | None  # None к следующему уроку
     school_class: SchoolClassShort
     subject: SubjectDetail
     teacher: UserShort

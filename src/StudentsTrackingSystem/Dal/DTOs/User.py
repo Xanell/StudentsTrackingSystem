@@ -14,7 +14,7 @@ class User(Base):
     first_name: Mapped[str] = mapped_column(String(50))
     middle_name: Mapped[str] = mapped_column(String(50))
     role: Mapped[RoleName] = mapped_column(str_enum(RoleName, "role"))
-    # Заполняется только у учеников.
+    # Заполняется только у учеников
     class_id: Mapped[int | None] = mapped_column(ForeignKey("classes.id"))
     deactivated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 

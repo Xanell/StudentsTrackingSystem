@@ -18,7 +18,6 @@ class SubjectsRepository:
         return self.db.get(Subject, subject_id)
 
     def get_by_name(self, name: str) -> Subject | None:
-        """Поиск без учёта регистра, чтобы не завести «Математику» и «математику»."""
         stmt = select(Subject).where(func.lower(Subject.name) == name.strip().lower())
         return self.db.scalars(stmt).first()
 
@@ -34,5 +33,3 @@ class SubjectsRepository:
         self.db.commit()
         self.db.refresh(subject)
         return subject
-
-    # delete_subject нет: предметы не удаляются, их можно только переименовать.

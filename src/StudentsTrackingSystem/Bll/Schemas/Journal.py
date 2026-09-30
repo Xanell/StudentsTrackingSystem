@@ -14,7 +14,7 @@ class JournalMark(BaseSchema):
 class JournalCell(BaseSchema):
     lesson_id: int
     marks: list[JournalMark] = []
-    attendance_id: int | None = None  # None — посещаемость на уроке ещё не отмечали
+    attendance_id: int | None = None  # None посещаемость на уроке ещё не отмечали
     is_present: bool | None = None
  
 class JournalRow(BaseSchema):

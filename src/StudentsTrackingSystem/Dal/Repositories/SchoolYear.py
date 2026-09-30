@@ -31,12 +31,10 @@ class SchoolYearRepository:
         return self.db.scalars(stmt).one_or_none()
 
     def get_by_date(self, day: date) -> SchoolYear | None:
-        """Учебный год, в который попадает дата."""
         stmt = select(SchoolYear).where(SchoolYear.start_date <= day, SchoolYear.end_date >= day)
         return self.db.scalars(stmt).first()
 
     def get_overlapping(self, start_date: date, end_date: date, exclude_id: int | None = None) -> list[SchoolYear]:
-        """Годы, пересекающиеся с периодом. Для проверки при создании/изменении года."""
         stmt = select(SchoolYear).where(SchoolYear.start_date <= end_date, SchoolYear.end_date >= start_date)
         if exclude_id is not None:
             stmt = stmt.where(SchoolYear.id != exclude_id)
@@ -51,7 +49,6 @@ class SchoolYearRepository:
         return list(self.db.scalars(stmt).all())
 
     def make_current(self, year_id: int) -> SchoolYear | None:
-        """Снимает флаг со всех годов и ставит на указанный — одной транзакцией."""
         year = self.get_by_id(year_id)
         if year is None:
             return None
@@ -70,5 +67,3 @@ class SchoolYearRepository:
         self.db.commit()
         self.db.refresh(year)
         return year
-
-    # delete_year нет: учебные годы не удаляются, только редактируются.

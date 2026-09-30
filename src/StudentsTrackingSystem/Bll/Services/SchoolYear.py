@@ -19,7 +19,6 @@ class SchoolYearService:
         return year
 
     def _check_dates(self, start_date: date, end_date: date, exclude_id: int | None = None) -> str:
-        """Проверяет даты и возвращает название года ("2026/2027")."""
         if end_date <= start_date:
             raise BusinessValidationError("Дата окончания должна быть позже даты начала")
 
@@ -46,7 +45,7 @@ class SchoolYearService:
         self._get_year(year_id)
         name = self._check_dates(data.start_date, data.end_date, exclude_id=year_id)
 
-        # Четверти и нерабочие дни не должны оказаться за границами года.
+        # Четверти и нерабочие дни не должны оказаться за границами года
         for quarter in self.quarter_repo.get_by_year(year_id):
             if quarter.start_date < data.start_date or quarter.end_date > data.end_date:
                 raise BusinessValidationError(

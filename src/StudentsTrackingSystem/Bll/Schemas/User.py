@@ -19,7 +19,7 @@ class UserDetail(BaseSchema):
     middle_name: str
     role: RoleName
     school_class: SchoolClassShort | None
-    deactivated_at: datetime | None  # None — активен
+    deactivated_at: datetime | None  # None активен
 
 class UserCreate(BaseSchema):
     last_name: str = Field(min_length=1, max_length=50)

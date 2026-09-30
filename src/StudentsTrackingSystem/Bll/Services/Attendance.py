@@ -18,7 +18,6 @@ class AttendanceService:
         return result
 
     def save_for_lesson(self, data: AttendanceSave) -> list[AttendanceDetail]:
-        """Сохранить отметки всего класса за урок. Повторное сохранение обновляет отметки."""
         lesson = self.lesson_repo.get_by_id(data.lesson_id)
         if lesson is None:
             raise NotFoundError(f"Урок с id={data.lesson_id} не найден")
@@ -34,7 +33,6 @@ class AttendanceService:
         return self._to_details(records)
 
     def update_attendance(self, attendance_id: int, data: AttendanceUpdate) -> AttendanceDetail:
-        """Исправить одну отметку, например ошибочную «Н»."""
         if self.attendance_repo.get_by_id(attendance_id) is None:
             raise NotFoundError(f"Отметка с id={attendance_id} не найдена")
         record = self.attendance_repo.update_attendance(attendance_id, data.is_present)

@@ -63,8 +63,6 @@ def lessons_list(request):
         lesson_service = LessonService(db)
         teacher_id = request.current_user.id
 
-        #current_date = date.today()
-        #lessons = lesson_service.get_teacher_day(teacher_id, current_date)
         date_param = request.GET.get("date", "")
         try:
             current_date = date.fromisoformat(date_param)
@@ -72,7 +70,6 @@ def lessons_list(request):
             current_date = date.today()
 
         prev_day = current_date - timedelta(days=1)
-        next_day = current_date + timedelta(days=1)
 
         lessons = lesson_service.get_teacher_day(teacher_id, current_date)
         rows = []
@@ -88,7 +85,6 @@ def lessons_list(request):
         "rows": rows,
         "current_date": current_date,
         "prev_day": prev_day.isoformat(),
-        "next_day": next_day.isoformat(),
         "is_today": current_date == date.today(),
     })
 

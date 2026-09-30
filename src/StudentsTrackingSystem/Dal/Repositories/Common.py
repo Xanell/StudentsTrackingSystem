@@ -5,7 +5,7 @@ class _Unset:
 
 UNSET = _Unset()
 
-def apply_updates(obj: object, **fields: Any) -> None:
+def apply_updates(obj: object, **fields) -> None:
     for name, value in fields.items():
         if value is not UNSET:
             setattr(obj, name, value)

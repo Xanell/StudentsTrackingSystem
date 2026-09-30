@@ -13,7 +13,6 @@ class MarkRepository:
         return self.db.get(Mark, mark_id)
 
     def get_cell(self, lesson_id: int, student_id: int, grade_type: GradeType) -> Mark | None:
-        """Клетка журнала, в том числе очищенная."""
         stmt = select(Mark).where(
             Mark.lesson_id == lesson_id,
             Mark.student_id == student_id,
@@ -38,7 +37,6 @@ class MarkRepository:
         return mark
 
     def clear_mark(self, mark_id: int) -> Mark | None:
-        """Очистить клетку: оценку поставили по ошибке. Строка остаётся с grade = NULL."""
         mark = self.get_by_id(mark_id)
         if mark is None:
             return None
@@ -54,7 +52,6 @@ class MarkRepository:
         return list(self.db.scalars(stmt).all())
 
     def get_by_lesson_ids(self, lesson_ids: list[int], include_cleared: bool = False) -> list[Mark]:
-        """Все оценки по набору уроков — для сетки журнала (ученики × уроки) одним запросом."""
         if not lesson_ids:
             return []
         stmt = select(Mark).where(Mark.lesson_id.in_(lesson_ids))
@@ -63,10 +60,6 @@ class MarkRepository:
         return list(self.db.scalars(stmt).all())
 
     def get_by_student_and_period(self, student_id: int, start_date: date, end_date: date, subject_id: int | None = None) -> list[Mark]:
-        """
-        Оценки ученика за период (неделя в дневнике, четверть, год) — только непустые,
-        поэтому средний балл по ним считается без дополнительных проверок.
-        """
         stmt = (
             select(Mark)
             .join(Lesson, Mark.lesson_id == Lesson.id)
@@ -82,5 +75,3 @@ class MarkRepository:
         if subject_id is not None:
             stmt = stmt.where(Lesson.subject_id == subject_id)
         return list(self.db.scalars(stmt).all())
-
-    # Удаления нет: оценки не удаляются, клетка очищается через clear_mark.

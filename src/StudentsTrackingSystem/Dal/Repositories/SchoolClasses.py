@@ -45,5 +45,3 @@ class SchoolClassesRepository:
         self.db.commit()
         self.db.refresh(school_class)
         return school_class
-
-    # delete_class нет: классы не удаляются, только редактируются.

@@ -8,7 +8,6 @@
         {% if not is_today %}
             <a href="{% url 'lessons_by_day' %}" class="btn-secondary">Сегодня</a>
         {% endif %}
-        <a href="{% url 'lessons_by_day' %}?date={{ next_day }}" class="btn-secondary">Завтра →</a>
     </div>
 </div>
 <table class="data-table">
@@ -27,7 +26,7 @@
         <tr class="row-link" onclick="location.href='{% url 'teacher_lesson' row.lesson.id %}'">
             <td>{{ row.lesson.lesson_number }}</td>
             <td>{{ row.start|time:"H:i"}}-{{ row.end|time:"H:i"}}</td>
-            <td>{{ row.lesson.school_class.number }}{{ lesson.school_class.letter }}</td>
+            <td>{{ row.lesson.school_class.number }}{{ row.lesson.school_class.letter }}</td>
             <td>{{ row.lesson.subject.name }}</td>
             <td>{{ row.lesson.topic|default:"-"}}</td>
             <td>{{ row.lesson.lesson_date|date:"d.m.Y" }}</td>

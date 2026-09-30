@@ -39,7 +39,6 @@ class QuarterRepository:
         return self.db.scalars(stmt).one_or_none()
 
     def get_by_date(self, school_year_id: int, day: date) -> SchoolQuarter | None:
-        """Четверть, в которую попадает дата. None — это каникулы."""
         stmt = select(SchoolQuarter).where(
             SchoolQuarter.school_year_id == school_year_id,
             SchoolQuarter.start_date <= day,
@@ -48,7 +47,6 @@ class QuarterRepository:
         return self.db.scalars(stmt).first()
 
     def get_overlapping(self, school_year_id: int, start_date: date, end_date: date, exclude_id: int | None = None) -> list[SchoolQuarter]:
-        """Четверти, пересекающиеся с периодом. Для проверки, что четверти не налезают друг на друга."""
         stmt = select(SchoolQuarter).where(
             SchoolQuarter.school_year_id == school_year_id,
             SchoolQuarter.start_date <= end_date,
@@ -66,5 +64,3 @@ class QuarterRepository:
         self.db.commit()
         self.db.refresh(quarter)
         return quarter
-
-    # delete_quarter нет: в году всегда 4 четверти, ошибку в датах исправляют через update_quarter.

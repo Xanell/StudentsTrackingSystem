@@ -20,7 +20,7 @@ class Lesson(Base):
     lesson_number: Mapped[int] = mapped_column(SmallInteger)
     topic: Mapped[str | None] = mapped_column(String(255))
     homework: Mapped[str | None] = mapped_column(Text)
-    homework_due_date: Mapped[date | None] = mapped_column(Date)  # None — к следующему уроку
+    homework_due_date: Mapped[date | None] = mapped_column(Date)  # None к следующему уроку
 
     school_class: Mapped["SchoolClass"] = relationship(lazy="joined")
     subject: Mapped["Subject"] = relationship(lazy="joined")

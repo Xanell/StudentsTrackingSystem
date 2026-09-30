@@ -78,7 +78,6 @@ class SchoolQuarterService:
         return result
 
     def get_current(self) -> SchoolQuarterDetail | None:
-        """Текущая четверть текущего года. None — сейчас каникулы или текущий год не выбран."""
         year = self.school_year_repo.get_current()
         if year is None:
             return None
