@@ -12,8 +12,6 @@ from Dal.Repositories.Schedule import ScheduleRepository
 from Dal.Repositories.User import UserRepository
 
 class DiaryService:
-    """Дневник ученика на неделю."""
-
     def __init__(self, session: Session):
         self.user_repo = UserRepository(session)
         self.lesson_repo = LessonsRepository(session)
@@ -24,7 +22,6 @@ class DiaryService:
         self.calendar_service = CalendarService(session)
 
     def get_week(self, student_id: int, any_day: date) -> list[DiaryDay]:
-        """Неделя, в которую попадает any_day: с понедельника по последний учебный день недели."""
         student = self.user_repo.get_by_id(student_id)
         if student is None or student.role != RoleName.STUDENT:
             raise NotFoundError(f"Ученик с id={student_id} не найден")
@@ -35,13 +32,11 @@ class DiaryService:
         last_day = monday + timedelta(days=SCHOOL_DAYS_PER_WEEK - 1)
         today = date.today()
 
-        # Уроки на прошедшие дни недели создаются по расписанию, если их ещё нет.
         day = monday
         while day <= last_day and day <= today:
             self.lesson_service.get_or_create_day(student.class_id, day)
             day += timedelta(days=1)
 
-        # Всё нужное за неделю — по одному запросу, дальше только разбор в циклах.
         calendar_days = self.calendar_service.get_period(monday, last_day)
         lessons = self.lesson_repo.get_by_class_and_period(student.class_id, monday, last_day)
 
@@ -67,7 +62,6 @@ class DiaryService:
         return result
 
     def _past_lessons(self, day: date, lessons, marks_by_lesson: dict, absent_lesson_ids: dict) -> list[DiaryLesson]:
-        """Проведённые уроки дня с оценками и пропусками."""
         result = []
         for lesson in lessons:
             if lesson.lesson_date != day:
@@ -90,7 +84,6 @@ class DiaryService:
         return result
 
     def _planned_lessons(self, class_id: int, day: date) -> list[DiaryLesson]:
-        """Будущие уроки — прямо из расписания."""
         result = []
         for slot in self.schedule_repo.get_by_class_and_weekday(class_id, day.isoweekday()):
             start_time, end_time = LESSON_TIMES[slot.lesson_number]

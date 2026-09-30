@@ -7,7 +7,6 @@ from Dal.Repositories.DayOff import DayOffRepository
 from Dal.Repositories.SchoolQuarter import QuarterRepository
 from Dal.Repositories.SchoolYear import SchoolYearRepository
 
-# Каникулы после четверти с этим номером.
 VACATION_TITLES = {
     1: "Осенние каникулы",
     2: "Зимние каникулы",
@@ -16,22 +15,13 @@ VACATION_TITLES = {
 SUMMER_VACATION = "Летние каникулы"
 
 class CalendarService:
-    """
-    Тип дня определяется так (первое подходящее правило):
-    1. есть запись в days_off — берём её тип и название;
-    2. день недели за пределами учебной недели — выходной;
-    3. день вне учебного года или до первой четверти — летние каникулы;
-    4. день внутри четверти — учебный;
-    5. иначе — каникулы после предыдущей четверти.
-    """
-
     def __init__(self, session: Session):
         self.school_year_repo = SchoolYearRepository(session)
         self.quarter_repo = QuarterRepository(session)
         self.day_off_repo = DayOffRepository(session)
 
     def _load(self, start_date: date, end_date: date):
-        """Загружает всё нужное для периода: годы, их четверти и нерабочие дни — без запросов в цикле по дням."""
+        # Загружает всё нужное для периода годы их четверти и нерабочие дни без запросов в цикле по дням
         years = self.school_year_repo.get_overlapping(start_date, end_date)
         quarters_by_year = {}
         for year in years:
@@ -48,6 +38,7 @@ class CalendarService:
             return CalendarDay(day=day, day_type=DayType.WEEKEND)
 
         current_year = None
+        # Все что за пределами года летние каникулы
         for year in years:
             if year.start_date <= day <= year.end_date:
                 current_year = year
@@ -57,6 +48,7 @@ class CalendarService:
 
         previous_quarter = None
         for quarter in quarters_by_year[current_year.id]:
+            # Если день внутри четверти то день учебный
             if quarter.start_date <= day <= quarter.end_date:
                 return CalendarDay(day=day, day_type=DayType.SCHOOL_DAY)
             if quarter.end_date < day:
@@ -68,6 +60,7 @@ class CalendarService:
         return CalendarDay(day=day, day_type=DayType.VACATION, title=title)
 
     def get_period(self, start_date: date, end_date: date) -> list[CalendarDay]:
+        # Загрузили все нужное
         years, quarters_by_year, days_off = self._load(start_date, end_date)
         result = []
         day = start_date
@@ -77,7 +70,7 @@ class CalendarService:
         return result
 
     def get_month(self, year: int, month: int) -> list[CalendarDay]:
-        """Все дни месяца — для страницы календаря."""
+        # Все дни месяца для страницы календаря
         days_in_month = calendar.monthrange(year, month)[1]
         return self.get_period(date(year, month, 1), date(year, month, days_in_month))
 

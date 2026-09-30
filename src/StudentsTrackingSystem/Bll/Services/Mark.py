@@ -8,7 +8,6 @@ from Dal.Repositories.Mark import MarkRepository
 from Dal.Repositories.User import UserRepository
 
 def calculate_average(grades: list[int]) -> float | None:
-    """Средний балл с точностью до сотых. None — оценок нет."""
     if len(grades) == 0:
         return None
     total = 0
@@ -29,7 +28,6 @@ class MarkService:
         return result
 
     def set_mark(self, data: MarkSet) -> MarkDetail:
-        """Поставить или изменить оценку в клетке журнала."""
         lesson = self.lesson_repo.get_by_id(data.lesson_id)
         if lesson is None:
             raise NotFoundError(f"Урок с id={data.lesson_id} не найден")
@@ -51,7 +49,6 @@ class MarkService:
         return MarkDetail.model_validate(mark)
 
     def clear_mark(self, mark_id: int) -> MarkDetail:
-        """Очистить клетку: оценку поставили по ошибке."""
         if self.mark_repo.get_by_id(mark_id) is None:
             raise NotFoundError(f"Оценка с id={mark_id} не найдена")
         return MarkDetail.model_validate(self.mark_repo.clear_mark(mark_id))
@@ -67,7 +64,6 @@ class MarkService:
         )
 
     def get_average(self, student_id: int, start_date: date, end_date: date, subject_id: int) -> float | None:
-        """Средний балл ученика по предмету за период (например, за четверть)."""
         grades = []
         for mark in self.mark_repo.get_by_student_and_period(student_id, start_date, end_date, subject_id):
             grades.append(mark.grade)

@@ -6,12 +6,6 @@ from ..DTOs.Lessons import Lesson
 from ..DTOs.Mark import Mark
 
 class MarkRepository:
-    """
-    Оценки не удаляются. Клетка журнала ставится через set_mark и очищается через clear_mark
-    (grade = NULL). Списочные методы по умолчанию возвращают только непустые оценки,
-    include_cleared=True — вместе с очищенными.
-    """
-
     def __init__(self, session: Session):
         self.db = session
 
@@ -28,10 +22,6 @@ class MarkRepository:
         return self.db.scalars(stmt).one_or_none()
 
     def set_mark(self, lesson_id: int, student_id: int, grade_type: GradeType, grade: int) -> Mark:
-        """
-        Поставить или изменить оценку в клетке.
-        Если клетки ещё нет — создаётся строка, если есть (в т.ч. очищенная) — обновляется.
-        """
         mark = self.get_cell(lesson_id, student_id, grade_type)
         if mark is None:
             mark = Mark(

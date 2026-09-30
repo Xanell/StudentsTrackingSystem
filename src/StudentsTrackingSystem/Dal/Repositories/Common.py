@@ -1,13 +1,5 @@
-from typing import Any
-
 class _Unset:
-    """
-    Маркер «поле не передано» для update-методов.
-    Позволяет отличить «не менять» (UNSET) от «очистить» (None):
-        repo.update_lesson(5, topic=None)   -> тема очищается
-        repo.update_lesson(5)               -> тема не меняется
-    """
-
+    # Маркер поля не передан
     def __bool__(self) -> bool:
         return False
 

@@ -18,8 +18,6 @@ from Dal.Repositories.Subjects import SubjectsRepository
 from Dal.Repositories.User import UserRepository
 
 class JournalService:
-    """Журнал учителя: таблица «ученики × уроки» по одному предмету в одном классе."""
-
     def __init__(self, session: Session):
         self.school_class_repo = SchoolClassesRepository(session)
         self.subject_repo = SubjectsRepository(session)
@@ -44,10 +42,10 @@ class JournalService:
         for lesson in lessons:
             lesson_ids.append(lesson.id)
 
-        # Выбывшие ученики тоже показываются: их оценки за период должны быть видны.
+        # Выбывшие ученики тоже показываются: их оценки за период должны быть видны
         students = self.user_repo.get_students_by_class(class_id, include_inactive=True)
 
-        # Все оценки и отметки за период — двумя запросами, дальше раскладываем по клеткам.
+        # Все оценки и отметки за период — двумя запросами, дальше раскладываем по клеткам
         marks_by_cell = {}
         for mark in self.mark_repo.get_by_lesson_ids(lesson_ids):
             key = (mark.student_id, mark.lesson_id)
@@ -101,7 +99,7 @@ class JournalService:
         return self.get_journal(class_id, subject_id, quarter.start_date, quarter.end_date)
 
     def get_teacher_journals(self, teacher_id: int) -> list[TeacherJournalLink]:
-        """Какие журналы (класс + предмет) учитель ведёт в текущем году — по расписанию."""
+        # Какие журналы класс + предмет учитель ведёт в текущем году по расписанию
         year = self.school_year_repo.get_current()
         if year is None:
             return []

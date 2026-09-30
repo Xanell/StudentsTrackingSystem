@@ -9,14 +9,6 @@ from Dal.Repositories.SchoolClasses import SchoolClassesRepository
 from Dal.Repositories.SchoolYear import SchoolYearRepository
 
 class LessonService:
-    """
-    Обычные уроки создаются автоматически по расписанию (get_or_create_day),
-    когда учитель открывает журнал или ученик — дневник. Создаются только уроки
-    на сегодня и прошедшие дни: будущие показываются прямо из расписания, чтобы
-    изменения расписания не расходились с уже созданными уроками.
-    Вручную (create_lesson) — только замены и перенесённые уроки.
-    """
-
     def __init__(self, session: Session):
         self.lesson_repo = LessonsRepository(session)
         self.schedule_repo = ScheduleRepository(session)
@@ -43,7 +35,6 @@ class LessonService:
         return result
 
     def _is_class_school_day(self, school_class, day: date) -> bool:
-        """Учебный ли день для класса: внутри его учебного года и по календарю."""
         year = school_class.school_year
         if day < year.start_date or day > year.end_date:
             return False
@@ -54,7 +45,6 @@ class LessonService:
             raise BusinessValidationError("Срок сдачи домашки не может быть раньше даты урока")
 
     def get_or_create_day(self, class_id: int, day: date) -> list[LessonDetail]:
-        """Уроки класса на дату. Если день учебный и не в будущем — недостающие уроки создаются по расписанию."""
         school_class = self._get_class(class_id)
 
         if day <= date.today() and self._is_class_school_day(school_class, day):
@@ -73,7 +63,6 @@ class LessonService:
         return self._to_details(self.lesson_repo.get_by_class_and_date(class_id, day))
 
     def get_teacher_day(self, teacher_id: int, day: date) -> list[LessonDetail]:
-        """Уроки учителя на дату — главная страница учителя."""
         year = self.school_year_repo.get_current()
         if year is not None:
             # Сначала создаём уроки во всех классах, где у учителя по расписанию есть урок в этот день.
@@ -87,7 +76,6 @@ class LessonService:
         return self._to_details(self.lesson_repo.get_by_teacher_and_date(teacher_id, day))
 
     def update_lesson(self, lesson_id: int, data: LessonUpdate) -> LessonDetail:
-        """Тема и домашка. Пустое поле в форме очищает значение."""
         lesson = self._get_lesson(lesson_id)
         self._check_due_date(lesson.lesson_date, data.homework_due_date)
         updated = self.lesson_repo.update_lesson(

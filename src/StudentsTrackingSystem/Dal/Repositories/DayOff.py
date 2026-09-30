@@ -34,7 +34,7 @@ class DayOffRepository:
         return list(self.db.scalars(stmt).all())
 
     def get_in_range(self, start_date: date, end_date: date) -> list[DayOff]:
-        """Все нерабочие периоды, задевающие диапазон. Для календаря на месяц одним запросом."""
+        # Все нерабочие периоды, задевающие диапазон. Для календаря на месяц одним запросом
         stmt = (
             select(DayOff)
             .where(DayOff.start_date <= end_date, DayOff.end_date >= start_date)
@@ -54,6 +54,3 @@ class DayOffRepository:
         self.db.commit()
         self.db.refresh(day_off)
         return day_off
-
-    # delete_day_off нет: ошибочный праздник исправляют через update_day_off,
-    # в том числе переключая day_type в DayType.SCHOOL_DAY.
