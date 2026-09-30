@@ -163,7 +163,7 @@ def schedule_create(request, class_id: int):
                         f"{times[1].strftime('%H:%M')}"
                     )
             except (ValueError, TypeError):
-                # Кривые параметры — игнорируем
+                # Кривые параметры игнорируем
                 pass
 
         return render(request, "schedule/form.html", {
